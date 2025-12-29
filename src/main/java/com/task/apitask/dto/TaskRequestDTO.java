@@ -1,41 +1,17 @@
-package com.task.apitask.model;
+package com.task.apitask.dto;
 
 import java.time.LocalDate;
 
-public class Task {
+import com.task.apitask.model.TaskPriority;
+import com.task.apitask.model.TaskStatus;
 
-    private Integer id;
+public class TaskRequestDTO {
 
     private String title;
-
     private String description;
-
     private TaskStatus taskStatus;
-
     private TaskPriority taskPriority;
-
     private LocalDate dueDate;
-
-    public Task() {
-    }
-
-    public Task(Integer id, String title, String description, TaskStatus taskStatus,
-                TaskPriority taskPriority, LocalDate dueDate) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.taskStatus = taskStatus;
-        this.taskPriority = taskPriority;
-        this.dueDate = dueDate;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;

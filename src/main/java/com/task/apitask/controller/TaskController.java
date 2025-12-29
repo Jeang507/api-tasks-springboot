@@ -1,77 +1,44 @@
 package com.task.apitask.controller;
 
+import java.net.URI;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.task.apitask.model.Task;
+import com.task.apitask.dto.TaskRequestDTO;
+import com.task.apitask.dto.TaskResponseDTO;
 import com.task.apitask.service.TaskService;
 
-import java.net.URI;
-import java.util.List;
-
-/**
- * Controlador REST encargado de exponer los endpoints
- * para la gestión de tareas.
- */
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
 
     private final TaskService taskService;
 
-    /**
-     * Constructor que inyecta el servicio de tareas.
-     *
-     * @param taskService servicio de gestión de tareas
-     */
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
 
-    /**
-     * Obtiene la lista completa de tareas.
-     *
-     * @return 200 OK con la lista de tareas
-     */
+    // GET ALL
     @GetMapping
-    public ResponseEntity<List<Task>> getTasks() {
+    public ResponseEntity<List<TaskResponseDTO>> getTasks() {
         return ResponseEntity.ok(taskService.getTasks());
     }
 
-    /**
-     * Obtiene una tarea por su identificador.
-     *
-     * @param id identificador de la tarea
-     * @return 200 OK con la tarea encontrada
-     *         404 Not Found si no existe
-     */
+    // GET BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable Integer id) {
-        Task task = taskService.getTaskById(id);
-
-        if (task == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(task);
+    public ResponseEntity<TaskResponseDTO> getTaskById(@PathVariable Integer id) {
+        return ResponseEntity.ok(taskService.getTaskById(id));
     }
 
-    /**
-     * Crea una nueva tarea.
-     *
-     * @param task datos de la tarea
-     * @return 201 Created si se crea correctamente
-     *         400 Bad Request si los datos no son válidos
-     */
+    // POST
     @PostMapping
-    public ResponseEntity<Task> postTask(@RequestBody Task task) {
+    public ResponseEntity<TaskResponseDTO> postTask(
+            @RequestBody TaskRequestDTO dto) {
 
-        if (task == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        Task created = taskService.postTask(task);
+        TaskResponseDTO created = taskService.postTask(dto);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -79,81 +46,32 @@ public class TaskController {
                 .buildAndExpand(created.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).body(created);
+        return ResponseEntity
+                .created(location)
+                .body(created);
     }
 
-    /**
-     * Actualiza completamente una tarea existente.
-     *
-     * @param id identificador de la tarea
-     * @param task nuevos datos de la tarea
-     * @return 200 OK si se actualiza correctamente
-     *         404 Not Found si la tarea no existe
-     *         400 Bad Request si los datos no son válidos
-     */
+    // PUT
     @PutMapping("/{id}")
-    public ResponseEntity<Task> putTask(
+    public ResponseEntity<TaskResponseDTO> putTask(
             @PathVariable Integer id,
-            @RequestBody Task task) {
+            @RequestBody TaskRequestDTO dto) {
 
-        Task existing = taskService.getTaskById(id);
-
-        if (existing == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        if (task == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        Task updated = taskService.putTask(id, task);
-        return ResponseEntity.ok(updated);
+        return ResponseEntity.ok(taskService.putTask(id, dto));
     }
 
-    /**
-     * Actualiza parcialmente una tarea existente.
-     *
-     * @param id identificador de la tarea
-     * @param task campos a actualizar
-     * @return 200 OK si se actualiza correctamente
-     *         404 Not Found si la tarea no existe
-     *         400 Bad Request si los datos no son válidos
-     */
+    // PATCH
     @PatchMapping("/{id}")
-    public ResponseEntity<Task> patchTask(
+    public ResponseEntity<TaskResponseDTO> patchTask(
             @PathVariable Integer id,
-            @RequestBody Task task) {
+            @RequestBody TaskRequestDTO dto) {
 
-        Task existing = taskService.getTaskById(id);
-
-        if (existing == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        if (task == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        Task updated = taskService.patchTask(id, task);
-        return ResponseEntity.ok(updated);
+        return ResponseEntity.ok(taskService.patchTask(id, dto));
     }
 
-    /**
-     * Elimina una tarea del sistema.
-     *
-     * @param id identificador de la tarea
-     * @return 200 OK si se elimina correctamente
-     *         404 Not Found si la tarea no existe
-     */
+    // DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<Task> deleteTask(@PathVariable Integer id) {
-
-        Task removed = taskService.deleteTask(id);
-
-        if (removed == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(removed);
+    public ResponseEntity<TaskResponseDTO> deleteTask(@PathVariable Integer id) {
+        return ResponseEntity.ok(taskService.deleteTask(id));
     }
 }

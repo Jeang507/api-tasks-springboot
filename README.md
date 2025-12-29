@@ -1,85 +1,93 @@
-# Sistema Backend para Gestión de Tareas
+# Task Management API – Spring Boot
 
-Este proyecto es una API REST desarrollada con Spring Boot que permite gestionar tareas mediante operaciones CRUD.  
-La idea principal es practicar el diseño de un backend bien estructurado, separando responsabilidades y usando correctamente los métodos HTTP.
+API REST sencilla para la gestión de tareas, desarrollada con **Spring Boot**.  
+El objetivo del proyecto es practicar una **arquitectura backend bien organizada**, usando DTOs, mappers y manejo centralizado de errores.
 
-## ¿De qué trata el proyecto?
+La aplicación trabaja **en memoria**, sin base de datos.
 
-En muchos casos, la gestión de tareas se hace de forma informal, lo que complica llevar control del estado, la prioridad o los plazos.  
-Este proyecto busca resolver eso a nivel backend, ofreciendo endpoints claros para crear, consultar, actualizar y eliminar tareas.
+## ¿Qué hace esta API?
 
-No incluye interfaz gráfica ni base de datos, ya que el enfoque está en entender la lógica del backend y la arquitectura del sistema.
-
-## ¿Qué se puede hacer con la API?
-
-La API permite:
-
-- Crear nuevas tareas
-- Consultar todas las tareas registradas
-- Obtener una tarea específica por su ID
-- Actualizar una tarea completa (PUT)
-- Actualizar solo algunos campos de una tarea (PATCH)
+Permite:
+- Crear tareas
+- Listar todas las tareas
+- Consultar una tarea por id
+- Actualizar tareas (PUT y PATCH)
 - Eliminar tareas
-
-Cada tarea maneja información como título, descripción, estado, prioridad y fecha límite.
-
 
 ## Estructura del proyecto
 
-El proyecto está organizado en capas para mantener el código claro y ordenado:
+El proyecto está organizado por capas:
 
-- **Controller**: recibe las peticiones HTTP y devuelve las respuestas.
-- **Service**: define e implementa la lógica de negocio.
-- **Model**: contiene la clase `Task` y sus enumeraciones.
+controller → maneja las peticiones HTTP
+service → lógica de negocio
+dto → objetos de entrada y salida
+mapper → conversión entre DTO y modelo
+model → entidad Task y enums
+error → excepciones personalizadas
 
-Esta separación permite que el código sea más fácil de mantener y extender.
+Cada capa tiene una responsabilidad clara.
 
-## Modelo de datos
+## Modelo Task
 
-La entidad principal es `Task`, que contiene:
+Una tarea contiene:
+- id
+- title
+- description
+- taskStatus (PENDING, COMPLETED)
+- taskPriority (LOW, MEDIUM, HIGH)
+- dueDate
 
-- `id`
-- `title`
-- `description`
-- `taskStatus` (PENDING, COMPLETED)
-- `taskPriority` (LOW, MEDIUM, HIGH)
-- `dueDate`
+## DTOs
 
-## Endpoints principales
+- **TaskRequestDTO**  
+  Se usa para recibir datos en POST, PUT y PATCH.  
+  No incluye el id.
 
-- `GET /tasks` → devuelve todas las tareas
-- `GET /tasks/{id}` → devuelve una tarea por ID
-- `POST /tasks` → crea una nueva tarea
-- `PUT /tasks/{id}` → actualiza una tarea completa
-- `PATCH /tasks/{id}` → actualiza parcialmente una tarea
-- `DELETE /tasks/{id}` → elimina una tarea
+- **TaskResponseDTO**  
+  Se usa para devolver datos al cliente.  
+  Incluye el id y solo getters.
 
-Las respuestas utilizan códigos HTTP adecuados como `200`, `201`, `400` y `404`.
 
-## Tecnologías usadas
-
-- Java
-- Spring Boot
-- Spring Web
-- Gradle
-
-## Ejecución del proyecto
-
-Para ejecutar la aplicación:
-
-```bash
-./gradlew bootRun
+## Endpoints
 ```
-En Windows:
+| Método |       Ruta           | Descripción             |
+|--------|----------------------|-------------------------|
+| GET    | /api/v1/tasks        | Listar tareas           |
+| GET    | /api/v1/tasks/{id}   | Obtener tarea por id    |
+| POST   | /api/v1/tasks        | Crear tarea             |
+| PUT    | /api/v1/tasks/{id}   | Reemplazar tarea        |
+| PATCH  | /api/v1/tasks/{id}   | Actualizar parcialmente |
+| DELETE | /api/v1/tasks/{id}   | Eliminar tarea          |
+```
 
-gradlew bootRun
+## Ejemplo de petición (POST)
 
-La API queda disponible en http://localhost:8080.
+```json
+{
+  "title": "Nueva tarea",
+  "description": "Descripción de la tarea",
+  "taskStatus": "PENDING",
+  "taskPriority": "MEDIUM",
+  "dueDate": "2025-01-15"
+}
 
-## Notas finales
+{
+  "code": "RESOURCE_NOT_FOUND",
+  "detail": "No existe una tarea con id 10"
+}
 
-Los datos se manejan únicamente en memoria y se inicializan al arrancar la aplicación.
-El proyecto está pensado como una práctica de backend, enfocada en entender cómo funciona una API REST desde cero.
+Ejecutar el proyecto
 
-## Autor
-Proyecto desarrollado desde cero como práctica personal de desarrollo backend con Spring Boot.
+Requisitos:
+
+Java 17+
+
+Gradle
+
+Ejecutar:
+
+./gradlew bootRun
+
+La API queda disponible en:
+
+http://localhost:8080/api/v1/tasks
