@@ -75,6 +75,7 @@ Una tarea contiene:
   "code": "RESOURCE_NOT_FOUND",
   "detail": "No existe una tarea con id 10"
 }
+```
 
 Ejecutar el proyecto
 
@@ -91,3 +92,7 @@ Ejecutar:
 La API queda disponible en:
 
 http://localhost:8080/api/v1/tasks
+
+**Jean Guillén**  
+Desarrollador Backend en formación  
+Apasionado por Java y Spring Boot
