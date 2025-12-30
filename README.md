@@ -93,6 +93,7 @@ La API queda disponible en:
 
 http://localhost:8080/api/v1/tasks
 
+## Autor
 **Jean Guillén**  
 Desarrollador Backend en formación  
 Apasionado por Java y Spring Boot
